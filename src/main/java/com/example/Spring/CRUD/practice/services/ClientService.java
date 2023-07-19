@@ -3,7 +3,6 @@ package com.example.Spring.CRUD.practice.services;
 import com.example.Spring.CRUD.practice.dtos.ClientDTO;
 import com.example.Spring.CRUD.practice.entities.Client;
 import com.example.Spring.CRUD.practice.repositories.ClientRepository;
-import com.example.Spring.CRUD.practice.services.exceptions.DatabaseException;
 import com.example.Spring.CRUD.practice.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -67,16 +67,12 @@ public class ClientService {
     return new ClientDTO(client);
   }
 
-  @Transactional
+  @Transactional(propagation = Propagation.SUPPORTS)
   public void delete(Long id) {
     if (!repository.existsById(id)) {
-      throw new ResourceNotFoundException("Cliente não encontrado na base de dados");
+      throw new ResourceNotFoundException("Cliente não encontrado");
     }
-    try {
-      repository.deleteById(id);
-    }
-    catch (DataIntegrityViolationException e) {
-      throw new DatabaseException("Falha de integridade referencial");
-    }
+
+    repository.deleteById(id);
   }
 }
