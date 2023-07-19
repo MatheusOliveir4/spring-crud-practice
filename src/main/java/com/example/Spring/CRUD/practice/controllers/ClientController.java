@@ -33,4 +33,10 @@ public class ClientController {
     ClientDTO dto = service.create(client);
     return ResponseEntity.status(HttpStatus.CREATED.value()).body(dto);
   }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<ClientDTO> update(@PathVariable Long id, @RequestBody ClientDTO client) {
+    ClientDTO dto = service.update(id, client);
+    return ResponseEntity.status(HttpStatus.CREATED.value()).body(dto);
+  }
 }
